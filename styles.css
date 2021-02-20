@@ -1,0 +1,99 @@
+* {
+  margin: 0;
+  height: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: "Roboto", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: rgb(46, 46, 46);
+  overflow: hidden;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: rgb(231, 231, 231);
+}
+P {
+  color: rgb(231, 231, 231);
+}
+nav {
+  background-color: rgb(36, 36, 36);
+  height: 10vh;
+  box-shadow: -15px 15px 30px #1c1c1c, 15px -15px 30px #262626;
+  text-align: center;
+}
+main {
+  width: 100%;
+  min-height: 90vh;
+}
+.squareBtn {
+  height: 49px;
+  border: 5px solid #424242;
+  background-color: #ffef11;
+  border-radius: 15px;
+  padding: 10px;
+  margin: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #424242;
+  box-shadow: -1px 1px 3px #1c1c1c, 1px -1px 3px #262626;
+}
+.btnCircleActive {
+  border: 5px solid #7829a7;
+}
+.icon {
+  width: 20px;
+  height: 20px;
+}
+.points {
+  text-align: center;
+  padding-top: 30px;
+}
+.wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+.playingField {
+  position: relative;
+  width: 400px;
+  height: 550px;
+  background-color: rgb(36, 36, 36);
+  border-radius: 15px;
+  box-shadow: -15px 15px 30px #1c1c1c, 15px -15px 30px #262626;
+  overflow: hidden;
+}
+.player {
+  position: absolute;
+  width: 40px;
+  height: 50px;
+  background-color: rgb(231, 231, 231);
+  border-radius: 10px;
+  box-shadow: -5px 5px 10px #1c1c1c, 5px -5px 10px #262626;
+  z-index: 2;
+}
+.player::before {
+  content: "◉";
+  color: #353535;
+  font-size: 22px;
+}
+.player::after {
+  content: "◉";
+  color: #353535;
+  font-size: 20px;
+}
+.platform {
+  position: absolute;
+  width: 50px;
+  height: 15px;
+  background-color: #ffef11;
+  border-radius: 10px;
+  box-shadow: -5px 5px 10px #1c1c1c, 5px -5px 10px #262626;
+}
