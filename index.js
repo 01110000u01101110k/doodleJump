@@ -198,6 +198,12 @@ function callGameOver() {
   );
   alert("game over");
   playOrPause.src = "icons/play.svg";
+  const div = document.createElement("div");
+  div.classList.add("startText");
+  const h2 = document.createElement("h2");
+  h2.innerText = "Нажмите на кнопку, что-бы начать игру.";
+  div.appendChild(h2);
+  playSpace.appendChild(div);
 }
 
 function fallDown() {
@@ -426,6 +432,7 @@ function gameLaunch() {
     gameOver = false;
     gameIsRunning = true;
     playOrPause.src = "icons/pause.svg";
+    playSpace.textContent = "";
     startGame();
   } else if (!gameOver && gameIsRunning) {
     alert("Пауза... Нажмите ok что-бы продолжить играть.");

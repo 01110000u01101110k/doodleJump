@@ -97,3 +97,9 @@ main {
   border-radius: 10px;
   box-shadow: -5px 5px 10px #1c1c1c, 5px -5px 10px #262626;
 }
+.startText {
+  display: flex;
+  justify-content: center;
+  margin: 10%;
+  text-align: center;
+}
