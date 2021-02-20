@@ -53,6 +53,13 @@ let jumpLoop;
 let fallDownLoop;
 let checkHitboxesLoop;
 
+/* mobile variables */
+let goRightLoop;
+let goLeftLoop;
+let goRight = false;
+let goLeft = false;
+/*mobile variables end */
+
 let cameraMove = false;
 
 let platformRemovalHeight = 50;
@@ -102,30 +109,68 @@ function createPlatforms() {
 
 function physics() {}
 
-function controlPlayer(e) {
-  if (
-    e.key.toLowerCase() === "a" ||
-    e.key.toLowerCase() === "ф" ||
-    e.key == "ArrowLeft"
-  ) {
-    player.style.marginLeft = `${
-      +player.style.marginLeft.slice(0, -2) - acceleration
-    }px`;
-    player.style.textAlign = "left";
-    setAcceleration();
-    outOfFieldCheck();
-  } else if (
-    e.key.toLowerCase() === "d" ||
-    e.key.toLowerCase() === "в" ||
-    e.key == "ArrowRight"
-  ) {
-    player.style.marginLeft = `${
-      +player.style.marginLeft.slice(0, -2) + acceleration
-    }px`;
-    player.style.textAlign = "right";
-    setAcceleration();
-    outOfFieldCheck();
+function controlPlayer(e, isMobile = false) {
+  if (isMobile) {
+    console.log(document.body.offsetWidth / 2, e.changedTouches[0].pageX);
+
+    if (document.body.offsetWidth / 2 > e.changedTouches[0].pageX) {
+      setGoLeft();
+    } else {
+      setGoRight();
+    }
+  } else {
+    if (
+      e.key.toLowerCase() === "a" ||
+      e.key.toLowerCase() === "ф" ||
+      e.key == "ArrowLeft"
+    ) {
+      setGoLeft();
+    } else if (
+      e.key.toLowerCase() === "d" ||
+      e.key.toLowerCase() === "в" ||
+      e.key == "ArrowRight"
+    ) {
+      setGoRight();
+    }
   }
+  function setGoRight() {
+    if (goLeft) {
+      goLeft = false;
+      clearInterval(goLeftLoop);
+    }
+    if (!goRight) {
+      goRight = true;
+      goRightLoop = setInterval(() => {
+        console.log("right");
+        player.style.marginLeft = `${
+          +player.style.marginLeft.slice(0, -2) + acceleration
+        }px`;
+        player.style.textAlign = "right";
+        setAcceleration();
+        outOfFieldCheck();
+      }, 50);
+    }
+  }
+
+  function setGoLeft() {
+    if (goRight) {
+      goRight = false;
+      clearInterval(goRightLoop);
+    }
+    if (!goLeft) {
+      goLeft = true;
+      goLeftLoop = setInterval(() => {
+        console.log("left");
+        player.style.marginLeft = `${
+          +player.style.marginLeft.slice(0, -2) - acceleration
+        }px`;
+        player.style.textAlign = "left";
+        setAcceleration();
+        outOfFieldCheck();
+      }, 50);
+    }
+  }
+
   function setAcceleration() {
     if (acceleration < 18) {
       acceleration += 2;
@@ -316,12 +361,35 @@ function playerSpawner() {
   playSpace.appendChild(player);
 
   motionDetection();
-
-  document.addEventListener("keydown", controlPlayer);
-  document.addEventListener(
-    "keyup",
-    () => (acceleration = playerMovementSpeed)
-  );
+  if (
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(
+      navigator.userAgent
+    )
+  ) {
+    document.addEventListener("touchstart", (e) => controlPlayer(e, true));
+    document.addEventListener("touchend", () => {
+      acceleration = playerMovementSpeed;
+      if (goLeft) {
+        goLeft = false;
+        clearInterval(goLeftLoop);
+      } else {
+        goRight = false;
+        clearInterval(goRightLoop);
+      }
+    });
+  } else {
+    document.addEventListener("keydown", controlPlayer);
+    document.addEventListener("keyup", () => {
+      acceleration = playerMovementSpeed;
+      if (goLeft) {
+        goLeft = false;
+        clearInterval(goLeftLoop);
+      } else {
+        goRight = false;
+        clearInterval(goRightLoop);
+      }
+    });
+  }
 }
 
 function cameraMovement() {
