@@ -1,5 +1,5 @@
 const play = document.getElementById("play");
-const pause = document.getElementById("pause");
+const playOrPause = document.getElementById("playOrPause");
 const volumeMute = document.getElementById("volumeMute");
 const volumeUp = document.getElementById("volumeUp");
 const playSpace = document.getElementById("playingField");
@@ -79,13 +79,20 @@ function createPlatforms() {
     let widthSpace;
     if (i % 2) {
       widthSpace =
-        10 + i * (playingField.width / countPlatforms) * 0.92 * Math.random(); // первое число влияет на отступ от левого края, итератор позволяет сделать последовательное увеличение смещения для каждого следующего блока, далее в скобках делим ширину игрового поля на количество блоков что-бы вычислить максимально доступное пространство для каждого блока, следующее число (от 0.99 и меньше) уменьшает общий результат (что-бы компенсировать смещение слева), и Math.random() добавляет случайное число, для более случайного распределения блоков по полю. (Если убрать Math.random(), на выходе  получаем распределение от верхнего левого края к нижнему правому).
+        10 +
+        i *
+          (playingField.width / countPlatforms) *
+          0.92 *
+          Math.random(); /* первое число влияет на отступ от левого края, итератор позволяет сделать последовательное увеличение смещения для каждого следующего блока, далее в скобках делим ширину игрового поля на количество блоков что-бы вычислить максимально доступное пространство для каждого блока, следующее число (от 0.99 и меньше) уменьшает общий результат (что-бы компенсировать смещение слева), и Math.random() добавляет случайное число, для более случайного распределения блоков по полю. (Если убрать Math.random(), на выходе  получаем распределение от верхнего левого края к нижнему правому).*/
     } else {
       widthSpace =
         playingField.width -
         60 -
-        i * (playingField.width / countPlatforms) * 0.92 * Math.random(); // здесь отнимаем от ширины поля 60px, что на 10px меньше ширины блока платформы, это делается что-бы справа был отступ в 10px аналогично верхнему примеру, где отступ от левой части поля в 10px. Далее от получившейся ширины отнимаем число, которое получаем аналогично прошлому условию. (Если убрать Math.random(), на выходе получаем распределение от верхнего правого края к нижнему левому).
-    } // для того что-бы равномернее распределить блоки по полю применяем разные условия распределения к четным и нечетным блокам. В итоге если удалить Math.random() и посмотреть что получается, увидим распределение в виде креста: Х. Если не применять чередование правил распределения, а применить только одно из них, то в итоге при применении Math.random() с одной стороны всегда будет больше блоков чем с противоположной.
+        i *
+          (playingField.width / countPlatforms) *
+          0.92 *
+          Math.random(); /* здесь отнимаем от ширины поля 60px, что на 10px меньше ширины блока платформы, это делается что-бы справа был отступ в 10px аналогично верхнему примеру, где отступ от левой части поля в 10px. Далее от получившейся ширины отнимаем число, которое получаем аналогично прошлому условию. (Если убрать Math.random(), на выходе получаем распределение от верхнего правого края к нижнему левому).*/
+    } /* для того что-бы равномернее распределить блоки по полю применяем разные условия распределения к четным и нечетным блокам. В итоге если удалить Math.random() и посмотреть что получается, увидим распределение в виде креста: Х. Если не применять чередование правил распределения, а применить только одно из них, то в итоге при применении Math.random() с одной стороны всегда будет больше блоков чем с противоположной.*/
 
     let newPlatform = new Platform(widthSpace, heightSpace);
     let createNewPlatform = newPlatform.createPlatform();
@@ -167,7 +174,7 @@ function callGameOver() {
   changeGravityPlatformCount10 = true;
   platformsArr = [];
   gameIsRunning = false;
-  gameOver = false;
+  gameOver = true;
   locationInSpaceY = null;
   jumping = true;
   crossing = false;
@@ -190,6 +197,7 @@ function callGameOver() {
     () => (acceleration = playerMovementSpeed)
   );
   alert("game over");
+  playOrPause.src = "icons/play.svg";
 }
 
 function fallDown() {
@@ -408,22 +416,18 @@ function setElevation() {
 }
 
 function startGame() {
-  if (gameIsRunning) {
-    playerSpawner();
-    createPlatforms();
-    //cameraMovement();
-    physics();
-  } else {
-    alert("pause");
-  }
+  playerSpawner();
+  createPlatforms();
+  physics();
 }
 
 function gameLaunch() {
-  if (gameIsRunning) {
-    gameIsRunning = false;
-    startGame();
-  } else {
+  if (gameOver && !gameIsRunning) {
+    gameOver = false;
     gameIsRunning = true;
+    playOrPause.src = "icons/pause.svg";
     startGame();
+  } else if (!gameOver && gameIsRunning) {
+    alert("Пауза... Нажмите ok что-бы продолжить играть.");
   }
 }
