@@ -74,6 +74,7 @@ let cameraMove = false;
 let platformRemovalHeight = 50;
 
 play.addEventListener("click", gameLaunch);
+playSpace.addEventListener("click", gameLaunch);
 
 class Platform {
   constructor(width, height) {
@@ -260,6 +261,7 @@ function callGameOver() {
     "keyup",
     () => (acceleration = playerMovementSpeed)
   );
+  playSpace.addEventListener("click", gameLaunch);
   alert("Game over!");
   playOrPause.src = "icons/play.svg";
   const div = document.createElement("div");
@@ -490,11 +492,11 @@ function cameraMovement() {
     }, 30);
     function countStepsCameraMovement() {
       countSteps += 1;
-      if (cameraMovementAcceleration < 15) {
+      if (cameraMovementAcceleration < 10) {
         cameraMovementAcceleration += 1;
       }
 
-      if (cameraMove && countSteps == 15) {
+      if (cameraMove && countSteps === 15) {
         cameraMove = false;
         clearInterval(movementLoop);
         countSteps = 0;
@@ -517,6 +519,7 @@ function startGame() {
 
 function gameLaunch() {
   if (gameOver && !gameIsRunning) {
+    playSpace.removeEventListener("click", gameLaunch);
     gameOver = false;
     gameIsRunning = true;
     playOrPause.src = "icons/pause.svg";
