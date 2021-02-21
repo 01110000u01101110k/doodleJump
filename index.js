@@ -36,7 +36,7 @@ let player;
 let acceleration = 10;
 let fallAcceleration = 1;
 let jumpAcceleration = playerMovementSpeed;
-let cameraMovementAcceleration = 10;
+let cameraMovementAcceleration = 4;
 let elevation = 0;
 let countPlatforms = 14;
 let gravityNormalization = 0;
@@ -223,7 +223,7 @@ function callGameOver() {
   acceleration = 14;
   fallAcceleration = 1;
   jumpAcceleration = playerMovementSpeed;
-  cameraMovementAcceleration = 10;
+  cameraMovementAcceleration = 4;
   elevation = 0;
   elevationNode.textContent = elevation;
   countPlatforms = 14;
@@ -492,7 +492,7 @@ function cameraMovement() {
     }, 30);
     function countStepsCameraMovement() {
       countSteps += 1;
-      if (cameraMovementAcceleration < 10) {
+      if (cameraMovementAcceleration <= 10) {
         cameraMovementAcceleration += 1;
       }
 
@@ -500,7 +500,7 @@ function cameraMovement() {
         cameraMove = false;
         clearInterval(movementLoop);
         countSteps = 0;
-        cameraMovementAcceleration = 10;
+        cameraMovementAcceleration = 4;
       }
     }
   }
