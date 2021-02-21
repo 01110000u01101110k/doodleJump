@@ -24,8 +24,8 @@ const playerPosition = {
 const bottomLine = playingField.height;
 const playerMovementSpeed = 4;
 let player;
-let acceleration = 14;
-let fallAcceleration = playerMovementSpeed;
+let acceleration = 10;
+let fallAcceleration = 1;
 let jumpAcceleration = playerMovementSpeed;
 let cameraMovementAcceleration = 10;
 let elevation = 0;
@@ -148,7 +148,7 @@ function controlPlayer(e, isMobile = false) {
         player.style.textAlign = "right";
         setAcceleration();
         outOfFieldCheck();
-      }, 50);
+      }, 30);
     }
   }
 
@@ -167,13 +167,13 @@ function controlPlayer(e, isMobile = false) {
         player.style.textAlign = "left";
         setAcceleration();
         outOfFieldCheck();
-      }, 50);
+      }, 30);
     }
   }
 
   function setAcceleration() {
-    if (acceleration < 18) {
-      acceleration += 2;
+    if (acceleration < 14) {
+      acceleration += 1;
     }
   }
   function outOfFieldCheck() {
@@ -206,7 +206,7 @@ function callGameOver() {
   playSpace.textContent = "";
   player = null;
   acceleration = 14;
-  fallAcceleration = playerMovementSpeed;
+  fallAcceleration = 1;
   jumpAcceleration = playerMovementSpeed;
   cameraMovementAcceleration = 10;
   elevation = 0;
@@ -234,6 +234,11 @@ function callGameOver() {
   clearInterval(checkHitboxesLoop);
   cameraMove = false;
 
+  goLeft = false;
+  clearInterval(goLeftLoop);
+  goRight = false;
+  clearInterval(goRightLoop);
+
   platformRemovalHeight = 50;
 
   document.removeEventListener("keydown", controlPlayer);
@@ -257,7 +262,7 @@ function fallDown() {
       player.style.marginTop = `${
         +player.style.marginTop.slice(0, -2) + fallAcceleration
       }px`;
-      if (fallAcceleration < 12) {
+      if (fallAcceleration < 20) {
         fallAcceleration++;
       }
       countStepsFallDown();
@@ -292,6 +297,7 @@ function fallDown() {
         clearInterval(fallDownLoop);
         clearInterval(checkHitboxesLoop);
         jumping = true;
+        fallAcceleration = 1;
         motionDetection();
       }
     }
