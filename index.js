@@ -36,7 +36,7 @@ let player;
 let acceleration = 10;
 let fallAcceleration = 1;
 let jumpAcceleration = playerMovementSpeed;
-let cameraMovementAcceleration = 4;
+let cameraMovementAcceleration = 15;
 let elevation = 0;
 let countPlatforms = 14;
 let gravityNormalization = 0;
@@ -223,7 +223,7 @@ function callGameOver() {
   acceleration = 14;
   fallAcceleration = 1;
   jumpAcceleration = playerMovementSpeed;
-  cameraMovementAcceleration = 4;
+  cameraMovementAcceleration = 15;
   elevation = 0;
   elevationNode.textContent = elevation;
   countPlatforms = 14;
@@ -267,7 +267,7 @@ function callGameOver() {
   const div = document.createElement("div");
   div.classList.add("startText");
   const h2 = document.createElement("h2");
-  h2.innerText = "Начните игру, кликнув на кнопку выше.";
+  h2.innerText = "Кликните здесь для начала игры.";
   div.appendChild(h2);
   playSpace.appendChild(div);
 }
@@ -492,15 +492,15 @@ function cameraMovement() {
     }, 30);
     function countStepsCameraMovement() {
       countSteps += 1;
-      if (cameraMovementAcceleration <= 10) {
-        cameraMovementAcceleration += 1;
+      if (cameraMovementAcceleration > 10) {
+        cameraMovementAcceleration -= 1;
       }
 
       if (cameraMove && countSteps === 15) {
         cameraMove = false;
         clearInterval(movementLoop);
         countSteps = 0;
-        cameraMovementAcceleration = 4;
+        cameraMovementAcceleration = 15;
       }
     }
   }
