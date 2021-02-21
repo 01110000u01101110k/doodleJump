@@ -14,9 +14,25 @@
   </head>
   <body>
     <nav>
-      <button class="squareBtn" id="play">
-        <img src="icons/play.svg" alt="play" class="icon" id="playOrPause" />
-      </button>
+      <div class="points">
+        <div class="center">
+          <h2 class="elevation">Счет: <span id="elevation">0</span></h2>
+        </div>
+        <div class="center">
+          <button class="squareBtn center" id="play">
+            <img
+              src="icons/play.svg"
+              alt="play"
+              class="icon"
+              id="playOrPause"
+            />
+          </button>
+        </div>
+        <div class="center">
+          <h2 class="recordScore">Рекорд: <span id="recordScore">0</span></h2>
+        </div>
+      </div>
+
       <!--<button class="squareBtn" id="pause">
         <img src="icons/pause.svg" alt="pause" class="icon" />
       </button>
@@ -31,13 +47,10 @@
       </button>-->
     </nav>
     <main>
-      <div class="points">
-        <h2 id="elevation">0</h2>
-      </div>
       <div class="wrap">
         <div class="playingField" id="playingField">
           <div class="startText">
-            <h2>Нажмите на кнопку, что-бы начать игру.</h2>
+            <h2>Начните игру, кликнув на кнопку выше.</h2>
           </div>
           <!--<div class="player"></div>-->
           <!--<div class="platform"></div>-->

@@ -4,6 +4,15 @@ const volumeMute = document.getElementById("volumeMute");
 const volumeUp = document.getElementById("volumeUp");
 const playSpace = document.getElementById("playingField");
 const elevationNode = document.getElementById("elevation");
+const recordScore = document.getElementById("recordScore");
+
+function getRecordScore() {
+  if (localStorage.getItem("recordScore")) {
+    console.log("recordScore");
+    recordScore.textContent = localStorage.getItem("recordScore");
+  }
+}
+getRecordScore();
 
 const playingField = {
   width: 400,
@@ -203,6 +212,11 @@ function setDeformation() {
 }
 
 function callGameOver() {
+  if (elevation > localStorage.getItem("recordScore")) {
+    localStorage.setItem("recordScore", elevation);
+    getRecordScore();
+  }
+
   playSpace.textContent = "";
   player = null;
   acceleration = 14;
@@ -246,12 +260,12 @@ function callGameOver() {
     "keyup",
     () => (acceleration = playerMovementSpeed)
   );
-  alert("game over");
+  alert("Game over!");
   playOrPause.src = "icons/play.svg";
   const div = document.createElement("div");
   div.classList.add("startText");
   const h2 = document.createElement("h2");
-  h2.innerText = "Нажмите на кнопку, что-бы начать игру.";
+  h2.innerText = "Начните игру, кликнув на кнопку выше.";
   div.appendChild(h2);
   playSpace.appendChild(div);
 }
@@ -406,7 +420,7 @@ function cameraMovement() {
         if (
           bottomLine + 10 < +item.style.marginTop.slice(0, -2) &&
           elevation === platformRemovalHeight &&
-          platformsArr.length > 3
+          platformsArr.length > 4
         ) {
           item.remove();
           thisArr.splice(i, 1);
