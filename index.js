@@ -29,11 +29,16 @@ const playerPosition = {
   x: null,
   y: null,
 };
+const mobSize = {
+  width: 55,
+  height: 55,
+};
 const bottomLine = playingField.height;
 const playerMovementSpeed = 4;
 let player;
 let mobAlreadyInSpace = false;
 let mobs;
+let disableCollisions = false;
 let acceleration = 10;
 let fallAcceleration = 1;
 let jumpAcceleration = playerMovementSpeed;
@@ -66,6 +71,7 @@ let movementLoop;
 let jumpLoop;
 let fallDownLoop;
 let checkHitboxesLoop;
+let mobsHitBoxDownLoop;
 
 /* mobile variables */
 let mobile = false;
@@ -250,9 +256,15 @@ function callGameOver() {
     localStorage.setItem("recordScore", elevation);
     getRecordScore();
   }
+  if (mobs) {
+    mobs.remove();
+    mobs = null;
+    mobAlreadyInSpace = false;
+  }
 
   playSpace.textContent = "";
   player = null;
+  disableCollisions = false;
   acceleration = 14;
   fallAcceleration = 1;
   jumpAcceleration = playerMovementSpeed;
@@ -308,6 +320,44 @@ function callGameOver() {
   playSpace.appendChild(div);
 }
 
+function mobsHitBoxUp() {
+  if (
+    +player.style.marginTop.slice(0, -2) + playerSize.height >=
+      +mobs.style.marginTop.slice(0, -2) &&
+    +player.style.marginTop.slice(0, -2) + playerSize.height <=
+      +mobs.style.marginTop.slice(0, -2) + mobSize.height / 3 &&
+    +player.style.marginLeft.slice(0, -2) + playerSize.width >=
+      +mobs.style.marginLeft.slice(0, -2) &&
+    +player.style.marginLeft.slice(0, -2) <=
+      +mobs.style.marginLeft.slice(0, -2) + mobSize.width
+  ) {
+    crossing = true;
+    mobs.remove();
+    mobs = null;
+    mobAlreadyInSpace = false;
+  }
+}
+function mobsHitBoxDown() {
+  if (
+    +player.style.marginTop.slice(0, -2) <=
+      +mobs.style.marginTop.slice(0, -2) + mobSize.height &&
+    +player.style.marginTop.slice(0, -2) >=
+      +mobs.style.marginTop.slice(0, -2) + mobSize.height / 2 &&
+    +player.style.marginLeft.slice(0, -2) + playerSize.width >=
+      +mobs.style.marginLeft.slice(0, -2) &&
+    +player.style.marginLeft.slice(0, -2) <=
+      +mobs.style.marginLeft.slice(0, -2) + mobSize.width
+  ) {
+    player.style.backgroundColor = "rgb(255, 182, 182)";
+    if (player.style.textAlign === "right") {
+      player.classList.add("playerRotationLeft");
+    } else {
+      player.classList.add("playerRotationRight");
+    }
+    disableCollisions = true;
+  }
+}
+
 function fallDown() {
   if (player) {
     fallDownLoop = setInterval(() => {
@@ -331,7 +381,8 @@ function fallDown() {
             +player.style.marginLeft.slice(0, -2) + playerSize.width >=
               +item.style.marginLeft.slice(0, -2) &&
             +player.style.marginLeft.slice(0, -2) <=
-              +item.style.marginLeft.slice(0, -2) + platformSize.width
+              +item.style.marginLeft.slice(0, -2) + platformSize.width &&
+            !disableCollisions
           ) {
             crossing = true;
           } else if (player.style.marginTop.slice(0, -2) > bottomLine) {
@@ -341,34 +392,10 @@ function fallDown() {
           clearInterval(checkHitboxesLoop);
         }
       });
-      /*if (mobs) {
-        if (
-          +player.style.marginTop.slice(0, -2) + playerSize.height >=
-            +mobs.style.marginTop.slice(0, -2) &&
-          +player.style.marginTop.slice(0, -2) <=
-            +mobs.style.marginTop.slice(0, -2) - playerSize.height / 2 &&
-          +player.style.marginLeft.slice(0, -2) + playerSize.width >=
-            +mobs.style.marginLeft.slice(0, -2) &&
-          +player.style.marginLeft.slice(0, -2) <=
-            +mobs.style.marginLeft.slice(0, -2) + 55
-        ) {
-          crossing = true;
-          mobs.remove();
-          mobs = null;
-          mobAlreadyInSpace = false;
-        } //else if (
-          //+player.style.marginTop.slice(0, -2) + playerSize.height >=
-          //  +mobs.style.marginTop.slice(0, -2) &&
-          //+player.style.marginTop.slice(0, -2) <=
-          //  +mobs.style.marginTop.slice(0, -2) - playerSize.height / 2 &&
-          //+player.style.marginLeft.slice(0, -2) + playerSize.width >=
-          //  +mobs.style.marginLeft.slice(0, -2) &&
-         // +player.style.marginLeft.slice(0, -2) <=
-          //  +mobs.style.marginLeft.slice(0, -2) + 55
-        //) {
-          //callGameOver();
-        //}
-      }*/
+      if (mobs && !disableCollisions) {
+        mobsHitBoxUp();
+        console.log("down check mobs");
+      }
       countStepsFallDown();
     }, 4);
 
@@ -394,6 +421,14 @@ function jump() {
     }
     countStepsJump();
   }, 30);
+
+  mobsHitBoxDownLoop = setInterval(() => {
+    if (mobs) {
+      mobsHitBoxDown();
+      console.log("jump check mobs");
+    }
+  }, 4);
+
   if (+player.style.marginTop.slice(0, -2) < playingField.height / 2) {
     cameraMove = true;
     cameraMovement();
@@ -416,6 +451,9 @@ function jump() {
     } else if (countStepsUp >= 12) {
       deformation = false;
       setDeformation();
+    }
+    if (mobs) {
+      clearInterval(mobsHitBoxDownLoop);
     }
   }
 }
@@ -530,7 +568,7 @@ function cameraMovement() {
         }
       });
       /* создать обработку столкновения */
-      /*if (elevation === platformRemovalHeight && !mobAlreadyInSpace) {
+      if (elevation === platformRemovalHeight && !mobAlreadyInSpace) {
         mobAlreadyInSpace = true;
         createNewMobs();
       }
@@ -544,7 +582,7 @@ function cameraMovement() {
             +mobs.style.marginTop.slice(0, -2) + cameraMovementAcceleration
           }px`;
         }
-      }*/
+      }
 
       countStepsCameraMovement();
     }, 30);
