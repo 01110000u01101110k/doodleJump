@@ -8,7 +8,6 @@ const recordScore = document.getElementById("recordScore");
 
 function getRecordScore() {
   if (localStorage.getItem("recordScore")) {
-    console.log("recordScore");
     recordScore.textContent = localStorage.getItem("recordScore");
   }
 }
@@ -148,8 +147,6 @@ function createPlatforms() {
 
 function controlPlayer(e, isMobile = false) {
   if (isMobile) {
-    console.log(document.body.offsetWidth / 2, e.changedTouches[0].pageX);
-
     if (document.body.offsetWidth / 2 > e.changedTouches[0].pageX) {
       setGoLeft();
     } else {
@@ -178,7 +175,6 @@ function controlPlayer(e, isMobile = false) {
     if (!goRight) {
       goRight = true;
       goRightLoop = setInterval(() => {
-        console.log("right");
         player.style.marginLeft = `${
           +player.style.marginLeft.slice(0, -2) + acceleration
         }px`;
@@ -197,7 +193,6 @@ function controlPlayer(e, isMobile = false) {
     if (!goLeft) {
       goLeft = true;
       goLeftLoop = setInterval(() => {
-        console.log("left");
         player.style.marginLeft = `${
           +player.style.marginLeft.slice(0, -2) - acceleration
         }px`;
@@ -544,7 +539,6 @@ function cameraMovement() {
           mobs.remove();
           mobs = null;
           mobAlreadyInSpace = false;
-          console.log(mobs);
         } else {
           mobs.style.marginTop = `${
             +mobs.style.marginTop.slice(0, -2) + cameraMovementAcceleration
@@ -569,7 +563,6 @@ function cameraMovement() {
       }
       let color;
       let randomColorNum = Math.floor(Math.random() * 3);
-      console.log("randomColorNum", randomColorNum);
       if (randomColorNum === 0) {
         color = "greenMob";
       } else if (randomColorNum === 1) {
@@ -581,8 +574,6 @@ function cameraMovement() {
       let newPlatform = new Mobs(widthSpace, heightSpace, color);
       let setMob = newPlatform.createMobs();
       mobs = setMob;
-
-      console.log("mobs", mobs, color);
     }
     function countStepsCameraMovement() {
       countSteps += 1;
@@ -591,8 +582,6 @@ function cameraMovement() {
           cameraMovementAcceleration -= 1;
         }
       }
-
-      console.log(cameraMovementAcceleration);
 
       if (cameraMove && countSteps === 15) {
         cameraMove = false;
