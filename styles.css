@@ -94,7 +94,7 @@ main {
   height: 50px;
   background-color: rgb(231, 231, 231);
   border-radius: 10px;
-  box-shadow: -5px 5px 10px #1c1c1c, 5px -5px 10px #262626;
+  /*box-shadow: -5px 5px 10px #1c1c1c, 5px -5px 10px #262626;*/
   z-index: 2;
 }
 .player::before {
@@ -107,17 +107,96 @@ main {
   color: #353535;
   font-size: 20px;
 }
+.mob {
+  position: absolute;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  /*box-shadow: -5px 5px 10px #1c1c1c, 5px -5px 10px #262626;*/
+  z-index: 2;
+  text-align: center;
+}
+
+.greenMob {
+  background-color: rgb(31, 29, 163);
+  border-top: 4px solid rgb(36, 33, 185);
+  border-right: 4px solid rgb(36, 33, 185);
+  border-left: 4px solid rgb(29, 27, 151);
+  border-bottom: 4px solid rgb(29, 27, 151);
+}
+.greenMob::before {
+  content: "◉";
+  color: #353535;
+  font-size: 15px;
+}
+.greenMob::after {
+  content: "◉";
+  color: #353535;
+  font-size: 15px;
+}
+.purpleMob {
+  background-color: rgb(80, 33, 167);
+  border-top: 4px solid rgb(88, 37, 182);
+  border-right: 4px solid rgb(88, 37, 182);
+  border-left: 4px solid rgb(75, 31, 158);
+  border-bottom: 4px solid rgb(75, 31, 158);
+}
+.purpleMob::before {
+  content: "◉";
+  color: #c5c5c5;
+  font-size: 15px;
+}
+.purpleMob::after {
+  content: "◉";
+  color: #c5c5c5;
+  font-size: 15px;
+}
+.orangeMob {
+  background-color: rgb(255, 87, 34);
+  border-top: 4px solid rgb(255, 94, 45);
+  border-right: 4px solid rgb(255, 94, 45);
+  border-left: 4px solid rgb(238, 79, 31);
+  border-bottom: 4px solid rgb(238, 79, 31);
+}
+.orangeMob::before {
+  content: "◉";
+  color: #353535;
+  font-size: 15px;
+}
+.orangeMob::after {
+  content: "◉";
+  color: #353535;
+  font-size: 15px;
+}
 .platform {
   position: absolute;
   width: 50px;
   height: 15px;
   background-color: #ffef11;
   border-radius: 10px;
-  box-shadow: -5px 5px 10px #1c1c1c, 5px -5px 10px #262626;
+  /*box-shadow: -5px 5px 10px #1c1c1c, 5px -5px 10px #262626;*/
 }
 .startText {
   display: flex;
   justify-content: center;
   margin: 10%;
   text-align: center;
+}
+.hitBoxMob {
+  position: absolute;
+  width: 55px;
+  height: 55px;
+  background-color: rgba(80, 33, 167, 0.295);
+}
+.hitBoxPlayer {
+  position: absolute;
+  width: 40px;
+  height: 50px;
+  background-color: rgba(231, 231, 231, 0.356);
+}
+.hitBoxPlatform {
+  position: absolute;
+  width: 50px;
+  height: 15px;
+  background-color: rgba(255, 221, 29, 0.356);
 }

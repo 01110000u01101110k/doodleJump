@@ -1,7 +1,7 @@
 const play = document.getElementById("play");
 const playOrPause = document.getElementById("playOrPause");
-const volumeMute = document.getElementById("volumeMute");
-const volumeUp = document.getElementById("volumeUp");
+/*const volumeMute = document.getElementById("volumeMute");
+const volumeUp = document.getElementById("volumeUp");*/
 const playSpace = document.getElementById("playingField");
 const elevationNode = document.getElementById("elevation");
 const recordScore = document.getElementById("recordScore");
@@ -33,6 +33,8 @@ const playerPosition = {
 const bottomLine = playingField.height;
 const playerMovementSpeed = 4;
 let player;
+let mobAlreadyInSpace = false;
+let mobs;
 let acceleration = 10;
 let fallAcceleration = 1;
 let jumpAcceleration = playerMovementSpeed;
@@ -47,6 +49,10 @@ let changeGravityPlatformCount10 = true;
 let changeGravityPlatformCount7 = true;
 let changeGravityPlatformCount5 = true;
 let platformsArr = [];
+/*
+let alreadyGhostsPlatformsArr = false;
+let ghostsPlatformsArr = [];
+*/
 let gameIsRunning = false;
 let gameOver = true;
 let locationInSpaceY = null;
@@ -63,6 +69,14 @@ let fallDownLoop;
 let checkHitboxesLoop;
 
 /* mobile variables */
+let mobile = false;
+if (
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(
+    navigator.userAgent
+  )
+) {
+  mobile = true;
+}
 let goRightLoop;
 let goLeftLoop;
 let goRight = false;
@@ -75,6 +89,21 @@ let platformRemovalHeight = 50;
 
 play.addEventListener("click", gameLaunch);
 playSpace.addEventListener("click", gameLaunch);
+
+class Mobs {
+  constructor(width, height, color) {
+    this.x = width;
+    this.y = height;
+    this.color = color;
+  }
+  createMobs() {
+    const setMobsDiv = document.createElement("div");
+    setMobsDiv.classList.add("mob", this.color);
+    setMobsDiv.style.marginTop = `${this.y}px`;
+    setMobsDiv.style.marginLeft = `${this.x}px`;
+    return playSpace.appendChild(setMobsDiv);
+  }
+}
 
 class Platform {
   constructor(width, height) {
@@ -116,8 +145,6 @@ function createPlatforms() {
     platformsArr.push(createNewPlatform);
   }
 }
-
-function physics() {}
 
 function controlPlayer(e, isMobile = false) {
   if (isMobile) {
@@ -202,6 +229,17 @@ function controlPlayer(e, isMobile = false) {
   }
 }
 
+function controlPlayerRemove() {
+  acceleration = playerMovementSpeed;
+  if (goLeft) {
+    goLeft = false;
+    clearInterval(goLeftLoop);
+  } else {
+    goRight = false;
+    clearInterval(goRightLoop);
+  }
+}
+
 function setDeformation() {
   if (deformation) {
     player.style.width = `${+player.style.width.slice(0, -2) - 1}px`;
@@ -256,11 +294,14 @@ function callGameOver() {
 
   platformRemovalHeight = 50;
 
-  document.removeEventListener("keydown", controlPlayer);
-  document.removeEventListener(
-    "keyup",
-    () => (acceleration = playerMovementSpeed)
-  );
+  if (mobile) {
+    document.removeEventListener("touchstart", (e) => controlPlayer(e, true));
+    document.removeEventListener("touchend", controlPlayerRemove);
+  } else {
+    document.removeEventListener("keydown", controlPlayer);
+    document.removeEventListener("keyup", controlPlayerRemove);
+  }
+
   playSpace.addEventListener("click", gameLaunch);
   alert("Game over!");
   playOrPause.src = "icons/play.svg";
@@ -290,8 +331,8 @@ function fallDown() {
           if (
             +player.style.marginTop.slice(0, -2) + playerSize.height >=
               +item.style.marginTop.slice(0, -2) &&
-            +player.style.marginTop.slice(0, -2) <=
-              +item.style.marginTop.slice(0, -2) - playerSize.height / 2 &&
+            +player.style.marginTop.slice(0, -2) + playerSize.height <=
+              +item.style.marginTop.slice(0, -2) + platformSize.height + 5 &&
             +player.style.marginLeft.slice(0, -2) + playerSize.width >=
               +item.style.marginLeft.slice(0, -2) &&
             +player.style.marginLeft.slice(0, -2) <=
@@ -305,6 +346,34 @@ function fallDown() {
           clearInterval(checkHitboxesLoop);
         }
       });
+      /*if (mobs) {
+        if (
+          +player.style.marginTop.slice(0, -2) + playerSize.height >=
+            +mobs.style.marginTop.slice(0, -2) &&
+          +player.style.marginTop.slice(0, -2) <=
+            +mobs.style.marginTop.slice(0, -2) - playerSize.height / 2 &&
+          +player.style.marginLeft.slice(0, -2) + playerSize.width >=
+            +mobs.style.marginLeft.slice(0, -2) &&
+          +player.style.marginLeft.slice(0, -2) <=
+            +mobs.style.marginLeft.slice(0, -2) + 55
+        ) {
+          crossing = true;
+          mobs.remove();
+          mobs = null;
+          mobAlreadyInSpace = false;
+        } //else if (
+          //+player.style.marginTop.slice(0, -2) + playerSize.height >=
+          //  +mobs.style.marginTop.slice(0, -2) &&
+          //+player.style.marginTop.slice(0, -2) <=
+          //  +mobs.style.marginTop.slice(0, -2) - playerSize.height / 2 &&
+          //+player.style.marginLeft.slice(0, -2) + playerSize.width >=
+          //  +mobs.style.marginLeft.slice(0, -2) &&
+         // +player.style.marginLeft.slice(0, -2) <=
+          //  +mobs.style.marginLeft.slice(0, -2) + 55
+        //) {
+          //callGameOver();
+        //}
+      }*/
       countStepsFallDown();
     }, 4);
 
@@ -383,34 +452,12 @@ function playerSpawner() {
   playSpace.appendChild(player);
 
   motionDetection();
-  if (
-    /Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(
-      navigator.userAgent
-    )
-  ) {
+  if (mobile) {
     document.addEventListener("touchstart", (e) => controlPlayer(e, true));
-    document.addEventListener("touchend", () => {
-      acceleration = playerMovementSpeed;
-      if (goLeft) {
-        goLeft = false;
-        clearInterval(goLeftLoop);
-      } else {
-        goRight = false;
-        clearInterval(goRightLoop);
-      }
-    });
+    document.addEventListener("touchend", controlPlayerRemove);
   } else {
     document.addEventListener("keydown", controlPlayer);
-    document.addEventListener("keyup", () => {
-      acceleration = playerMovementSpeed;
-      if (goLeft) {
-        goLeft = false;
-        clearInterval(goLeftLoop);
-      } else {
-        goRight = false;
-        clearInterval(goRightLoop);
-      }
-    });
+    document.addEventListener("keyup", controlPlayerRemove);
   }
 }
 
@@ -488,13 +535,64 @@ function cameraMovement() {
         }
       });
 
+      if (elevation === platformRemovalHeight && !mobAlreadyInSpace) {
+        mobAlreadyInSpace = true;
+        createNewMobs();
+      }
+      if (mobs) {
+        if (bottomLine + 10 < +mobs.style.marginTop.slice(0, -2)) {
+          mobs.remove();
+          mobs = null;
+          mobAlreadyInSpace = false;
+          console.log(mobs);
+        } else {
+          mobs.style.marginTop = `${
+            +mobs.style.marginTop.slice(0, -2) + cameraMovementAcceleration
+          }px`;
+        }
+      }
+
       countStepsCameraMovement();
     }, 30);
+    function createNewMobs() {
+      let heightSpace = -140;
+      let widthSpace;
+      let randomNum = Math.floor(Math.random() * 2);
+      if (randomNum % 2) {
+        widthSpace =
+          10 + 2 * (playingField.width / countPlatforms) * 0.92 * Math.random();
+      } else {
+        widthSpace =
+          playingField.width -
+          60 -
+          10 * (playingField.width / countPlatforms) * 0.92 * Math.random();
+      }
+      let color;
+      let randomColorNum = Math.floor(Math.random() * 3);
+      console.log("randomColorNum", randomColorNum);
+      if (randomColorNum === 0) {
+        color = "greenMob";
+      } else if (randomColorNum === 1) {
+        color = "purpleMob";
+      } else if (randomColorNum === 2) {
+        color = "orangeMob";
+      }
+
+      let newPlatform = new Mobs(widthSpace, heightSpace, color);
+      let setMob = newPlatform.createMobs();
+      mobs = setMob;
+
+      console.log("mobs", mobs, color);
+    }
     function countStepsCameraMovement() {
       countSteps += 1;
-      if (cameraMovementAcceleration > 10) {
-        cameraMovementAcceleration -= 1;
+      if (platformsArr.length > 8) {
+        if (cameraMovementAcceleration > 10) {
+          cameraMovementAcceleration -= 1;
+        }
       }
+
+      console.log(cameraMovementAcceleration);
 
       if (cameraMove && countSteps === 15) {
         cameraMove = false;
@@ -514,7 +612,6 @@ function setElevation() {
 function startGame() {
   playerSpawner();
   createPlatforms();
-  physics();
 }
 
 function gameLaunch() {
