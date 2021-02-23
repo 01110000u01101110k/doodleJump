@@ -534,7 +534,7 @@ function cameraMovement() {
           }
         }
       });
-
+      /* создать обработку столкновения */
       /*if (elevation === platformRemovalHeight && !mobAlreadyInSpace) {
         mobAlreadyInSpace = true;
         createNewMobs();
