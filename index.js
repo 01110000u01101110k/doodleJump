@@ -535,7 +535,7 @@ function cameraMovement() {
         }
       });
 
-      if (elevation === platformRemovalHeight && !mobAlreadyInSpace) {
+      /*if (elevation === platformRemovalHeight && !mobAlreadyInSpace) {
         mobAlreadyInSpace = true;
         createNewMobs();
       }
@@ -550,7 +550,7 @@ function cameraMovement() {
             +mobs.style.marginTop.slice(0, -2) + cameraMovementAcceleration
           }px`;
         }
-      }
+      }*/
 
       countStepsCameraMovement();
     }, 30);
