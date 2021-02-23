@@ -66,6 +66,7 @@ let deformation = true;
 
 let countSteps = 0;
 let countStepsUp = 0;
+let randomOneOrZero;
 
 let movementLoop;
 let jumpLoop;
@@ -394,7 +395,6 @@ function fallDown() {
       });
       if (mobs && !disableCollisions) {
         mobsHitBoxUp();
-        console.log("down check mobs");
       }
       countStepsFallDown();
     }, 4);
@@ -425,7 +425,6 @@ function jump() {
   mobsHitBoxDownLoop = setInterval(() => {
     if (mobs) {
       mobsHitBoxDown();
-      console.log("jump check mobs");
     }
   }, 4);
 
@@ -497,6 +496,14 @@ function playerSpawner() {
 function cameraMovement() {
   // на самом деле мы двигаем платформы и персонажа, функция название cameraMovement скорее описывает визуальный эффект которого мы хотим добиться
   if (cameraMove) {
+    if (elevation + 5 === platformRemovalHeight) {
+      randomOneOrZero = Math.floor(Math.random() * Math.floor(2));
+      if (randomOneOrZero) {
+        mobAlreadyInSpace = true;
+        createNewMobs();
+      }
+    }
+
     movementLoop = setInterval(() => {
       platformsArr.forEach((item, i, thisArr) => {
         if (
@@ -568,10 +575,7 @@ function cameraMovement() {
         }
       });
       /* создать обработку столкновения */
-      if (elevation === platformRemovalHeight && !mobAlreadyInSpace) {
-        mobAlreadyInSpace = true;
-        createNewMobs();
-      }
+
       if (mobs) {
         if (bottomLine + 10 < +mobs.style.marginTop.slice(0, -2)) {
           mobs.remove();
