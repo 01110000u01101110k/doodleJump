@@ -386,7 +386,10 @@ function fallDown() {
             !disableCollisions
           ) {
             crossing = true;
-          } else if (player.style.marginTop.slice(0, -2) > bottomLine) {
+          } else if (
+            player.style.marginTop.slice(0, -2) >
+            bottomLine + playerSize.width
+          ) {
             callGameOver();
           }
         } else {
