@@ -262,7 +262,7 @@ function callGameOver() {
     mobs = null;
     mobAlreadyInSpace = false;
   }
-
+  alert(`Поражение... Ваш результат: ${elevation}`);
   playSpace.textContent = "";
   player = null;
   disableCollisions = false;
@@ -311,7 +311,7 @@ function callGameOver() {
   }
 
   playSpace.addEventListener("click", gameLaunch);
-  alert("Game over!");
+
   playOrPause.src = "icons/play.svg";
   const div = document.createElement("div");
   div.classList.add("startText");
