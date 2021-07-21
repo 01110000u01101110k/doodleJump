@@ -110,7 +110,7 @@ class Mobs {
     return playSpace.appendChild(setMobsDiv);
   }
 }
-
+/*
 class Platform {
   constructor(width, height) {
     this.x = width;
@@ -124,7 +124,14 @@ class Platform {
     return playSpace.appendChild(setPlatformDiv);
   }
 }
-
+*/
+function Platform(x, y) {
+  const setPlatformDiv = document.createElement("div");
+  setPlatformDiv.classList.add("platform");
+  setPlatformDiv.style.marginTop = `${y}px`;
+  setPlatformDiv.style.marginLeft = `${x}px`;
+  return playSpace.appendChild(setPlatformDiv);
+}
 function createPlatforms() {
   for (let i = 0; i < countPlatforms; i++) {
     let heightSpace = 20 + i * (playingField.height / countPlatforms);
@@ -144,11 +151,14 @@ function createPlatforms() {
           (playingField.width / countPlatforms) *
           0.92 *
           Math.random(); /* здесь отнимаем от ширины поля 60px, что на 10px меньше ширины блока платформы, это делается что-бы справа был отступ в 10px аналогично верхнему примеру, где отступ от левой части поля в 10px. Далее от получившейся ширины отнимаем число, которое получаем аналогично прошлому условию. (Если убрать Math.random(), на выходе получаем распределение от верхнего правого края к нижнему левому).*/
-    } /* для того что-бы равномернее распределить блоки по полю применяем разные условия распределения к четным и нечетным блокам. В итоге если удалить Math.random() и посмотреть что получается, увидим распределение в виде креста: Х. Если не применять чередование правил распределения, а применить только одно из них, то в итоге при применении Math.random() с одной стороны всегда будет больше блоков чем с противоположной.*/
+    } /* для того что-бы равномернее распределить блоки по полю применяем разные условия распределения к четным и нечетным блокам. В итоге если удалить Math.random() и посмотреть что получается, увидим распределение в виде креста: Х. Если не применять чередование правил распределения, а применить только одно из них, то в итоге при применении Math.random() с одной стороны чаще всего будет больше блоков чем с противоположной.*/
 
+    let newPlatform = Platform(widthSpace, heightSpace);
+    /*
     let newPlatform = new Platform(widthSpace, heightSpace);
     let createNewPlatform = newPlatform.createPlatform();
-    platformsArr.push(createNewPlatform);
+    */
+    platformsArr.push(newPlatform);
   }
 }
 
